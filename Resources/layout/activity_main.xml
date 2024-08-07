@@ -50,15 +50,14 @@
         android:background="#F2BBBB"
         android:layout_centerInParent="true">
 
-        <TextView
-            android:id="@+id/task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:background="#F2BBBB"
-            android:fontFamily="monospace"
-            android:textSize="20sp"
-            android:text="Your task is here!"/>
+        <TableLayout
+        android:id="@+id/taskTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mainFrame"
+        android:stretchColumns="1,2"
+        android:background="#F2BBBB"
+        android:paddingTop="10dp"/>
     </FrameLayout>
 
     
