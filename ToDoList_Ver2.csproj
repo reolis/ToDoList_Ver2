@@ -9,10 +9,23 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AndroidKeyStore>False</AndroidKeyStore>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AndroidKeyStore>False</AndroidKeyStore>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidUseAapt2>True</AndroidUseAapt2>
+    <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\layout\add_icon.xml" />
     <None Remove="Resources\layout\button_color.xml" />
     <None Remove="Resources\layout\grid_item.xml" />
+    <None Remove="Resources\layout\rounded_button.xml" />
+    <None Remove="Resources\layout\rounded_button_2.xml" />
+    <None Remove="Resources\layout\rounded_table.xml" />
+    <None Remove="Resources\layout\rounded_textbox.xml" />
     <None Remove="Resources\layout\star.xml" />
     <None Remove="Resources\layout\text_frame.xml" />
   </ItemGroup>

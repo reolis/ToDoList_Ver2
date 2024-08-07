@@ -45,6 +45,10 @@ namespace ToDoList_Ver2
             enterText = FindViewById<EditText>(Resource.Id.editText1);
             taskTable = FindViewById<TableLayout>(Resource.Id.taskTable);
 
+            TextView textViewDate = FindViewById<TextView>(Resource.Id.textView1);
+            string currentDate = DateTime.Now.ToString("dd.MM");
+            textViewDate.Text = $"To-Do List for {currentDate}";
+
             btnDel.Click += BtnDel_Click;
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
@@ -103,8 +107,6 @@ namespace ToDoList_Ver2
             {
                 enterText.Visibility = ViewStates.Gone;
             }
-
-            btnAdd.SetBackgroundColor(Android.Graphics.Color.Argb(100, 202, 130, 248));
         }
 
         private void BtnCreate_Click(object sender, System.EventArgs e)
@@ -121,7 +123,7 @@ namespace ToDoList_Ver2
 
             enterText.Visibility = ViewStates.Gone;
             btnCreate.Visibility = ViewStates.Gone;
-            btnAdd.SetBackgroundColor(Android.Graphics.Color.Argb(100, 242, 187, 187));
+            
         }
 
         private void AddTaskToTable(Task task)
