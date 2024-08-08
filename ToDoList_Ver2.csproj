@@ -24,6 +24,7 @@
     <None Remove="Resources\layout\grid_item.xml" />
     <None Remove="Resources\layout\rounded_button.xml" />
     <None Remove="Resources\layout\rounded_button_2.xml" />
+    <None Remove="Resources\layout\rounded_main_text.xml" />
     <None Remove="Resources\layout\rounded_table.xml" />
     <None Remove="Resources\layout\rounded_textbox.xml" />
     <None Remove="Resources\layout\star.xml" />
