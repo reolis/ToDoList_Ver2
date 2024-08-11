@@ -8,6 +8,12 @@ using System;
 using System.IO;
 using Android.App;
 using System.Text;
+using Android.Support.V4.Content;
+using Android;
+using Android.Content.PM;
+using Android.Support.V4.App;
+using Xamarin.Essentials;
+using Android.Graphics;
 
 namespace ToDoList_Ver2
 {
@@ -18,6 +24,7 @@ namespace ToDoList_Ver2
         Button btnAdd;
         Button btnEdit;
         Button btnCreate;
+        ImageButton btnSelectImage;
 
         EditText enterText;
         TableLayout taskTable;
@@ -26,25 +33,29 @@ namespace ToDoList_Ver2
 
         TableRow selectedRow;
 
+        ImageView imageFromUser;
+
         static string fileName = "tasks.txt";
         static string filePath;
         string oldFile;
+
+        const int RequestStorageId = 0;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
 
-            filePath = Path.Combine(FilesDir.Path, fileName);
+            filePath = System.IO.Path.Combine(FilesDir.Path, fileName);
 
             btnDel = FindViewById<Button>(Resource.Id.btnDel);
             btnAdd = FindViewById<Button>(Resource.Id.btnAdd);
             btnEdit = FindViewById<Button>(Resource.Id.btnEdit);
             btnCreate = FindViewById<Button>(Resource.Id.btnCreate);
-
             enterText = FindViewById<EditText>(Resource.Id.editText1);
             taskTable = FindViewById<TableLayout>(Resource.Id.taskTable);
-
+            imageFromUser = FindViewById<ImageView>(Resource.Id.imageFromUser);
+            btnSelectImage = FindViewById<ImageButton>(Resource.Id.btnSelectImage);
             TextView textViewDate = FindViewById<TextView>(Resource.Id.textView1);
             string currentDate = DateTime.Now.ToString("dd.MM");
             textViewDate.Text = $"To-Do List for {currentDate}";
@@ -53,6 +64,7 @@ namespace ToDoList_Ver2
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnCreate.Click += BtnCreate_Click;
+            btnSelectImage.Click += BtnSelectImage_Click;
 
             if (File.Exists(filePath))
             {
@@ -71,6 +83,51 @@ namespace ToDoList_Ver2
             {
                 tasks = new List<Task>();
             }
+        }
+
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        {
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            if (requestCode == RequestStorageId)
+            {
+                bool allPermissionsGranted = true;
+                for (int i = 0; i < grantResults.Length; i++)
+                {
+                    if (grantResults[i] != Permission.Granted)
+                    {
+                        allPermissionsGranted = false;
+                        break;
+                    }
+                }
+
+                if (allPermissionsGranted)
+                {
+                    AccessExternalStorage();
+                }
+                else
+                {
+                    Toast.MakeText(this, "You can't add image", ToastLength.Short).Show();
+                }
+            }
+        }
+
+        private void AccessExternalStorage()
+        {
+            ChooseBackground();
+
+            //string backgroundImagePath = Preferences.Get("BackgroundImagePath", null);
+
+            //if (!string.IsNullOrEmpty(backgroundImagePath) && File.Exists(backgroundImagePath))
+            //{
+            //    Bitmap bitmap = BitmapFactory.DecodeFile(backgroundImagePath);
+            //    imageFromUser.SetImageBitmap(bitmap);
+            //}
+            //else
+            //{
+            //    Toast.MakeText(this, "No background image found. Please select an image.", ToastLength.Short).Show();
+            //}
         }
 
         private static List<Task> ConvertFromString(string oldFile)
@@ -95,6 +152,95 @@ namespace ToDoList_Ver2
             return oldTasks;
         }
 
+        public async void ChooseBackground()
+        {
+            try
+            {
+                var result = await FilePicker.PickAsync(new PickOptions
+                {
+                    PickerTitle = "Please select an image",
+                    FileTypes = FilePickerFileType.Images
+                });
+
+                if (result != null)
+                {
+                    using (var stream = await result.OpenReadAsync())
+                    {
+                        if (stream != null)
+                        {
+                            var image = BitmapFactory.DecodeStream(stream);
+                            if (image != null)
+                            {
+                                imageFromUser.SetImageBitmap(image);
+
+                                var localPath = SaveImageLocally(result.FileName, image);
+                                SaveBackgroundImagePath(localPath);
+                            }
+                            else
+                            {
+                                Toast.MakeText(this, "Failed to decode image.", ToastLength.Short).Show();
+                            }
+                        }
+                        else
+                        {
+                            Toast.MakeText(this, "Failed to open stream.", ToastLength.Short).Show();
+                        }
+                    }
+                }
+                else
+                {
+                    Toast.MakeText(this, "Image selection was cancelled.", ToastLength.Short).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, $"Error: {ex.Message}", ToastLength.Short).Show();
+            }
+        }
+
+
+
+        private string SaveImageLocally(string fileName, Bitmap bitmap)
+        {
+            var localPath = System.IO.Path.Combine(Application.Context.GetExternalFilesDir(null).AbsolutePath, fileName);
+
+            using (var fileStream = new FileStream(localPath, FileMode.Create))
+            {
+                bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, fileStream);
+            }
+
+            if (!File.Exists(localPath))
+            {
+                throw new InvalidOperationException("Failed to save image.");
+            }
+
+            return localPath;
+        }
+
+
+        private void SaveBackgroundImagePath(string path)
+        {
+            Preferences.Set("BackgroundImagePath", path);
+        }
+
+
+        private void BtnSelectImage_Click(object sender, System.EventArgs e)
+        {
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != Permission.Granted ||
+                ContextCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new string[]
+                {
+                    Manifest.Permission.ReadExternalStorage,
+                    Manifest.Permission.WriteExternalStorage
+                }, RequestStorageId);
+            }
+            else
+            {
+                AccessExternalStorage();
+            }
+            
+        }
 
         private void BtnAdd_Click(object sender, System.EventArgs e)
         {

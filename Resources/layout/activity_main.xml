@@ -5,7 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@layout/flowers-against-sky">
+    android:background="#A1D9FF">
+
+    <ImageView
+        android:id="@+id/imageFromUser"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+    </ImageView>
 
     <FrameLayout
         android:id="@+id/mainFrame"
@@ -159,5 +165,10 @@
         android:visibility="invisible">
     </Button>
 
-    
+    <ImageButton
+        android:id="@+id/btnSelectImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@layout/icon_settings"/>
+
 </RelativeLayout>

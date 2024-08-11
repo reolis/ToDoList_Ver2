@@ -22,6 +22,7 @@
     <None Remove="Resources\layout\add_icon.xml" />
     <None Remove="Resources\layout\button_color.xml" />
     <None Remove="Resources\layout\grid_item.xml" />
+    <None Remove="Resources\layout\icon_settings.xml" />
     <None Remove="Resources\layout\rounded_button.xml" />
     <None Remove="Resources\layout\rounded_button_2.xml" />
     <None Remove="Resources\layout\rounded_main_text.xml" />
@@ -29,5 +30,9 @@
     <None Remove="Resources\layout\rounded_textbox.xml" />
     <None Remove="Resources\layout\star.xml" />
     <None Remove="Resources\layout\text_frame.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Android.Support.Compat" Version="28.0.0.3" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
   </ItemGroup>
 </Project>
